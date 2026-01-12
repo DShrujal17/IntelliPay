@@ -12,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -72,5 +75,28 @@ public class AuthService {
                 .message("User saved successfully")
                 .user(userDto)
                 .build();
+    }
+
+    @PutMapping("/update")
+    public UserDto updateUser(UUID id, @Valid UpdateUserRequestDto updateUserRequestDto) {
+        User user =     userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(updateUserRequestDto.getUsername() != null)
+            user.setUsername(updateUserRequestDto.getUsername());
+
+        if(updateUserRequestDto.getEmail() != null)
+            user.setEmail(updateUserRequestDto.getEmail());
+
+        User updatedUser = userRepository.save(user);
+
+        return modelMapper.map(updatedUser , UserDto.class);
+    }
+
+
+    public String deleteUser(UUID id) {
+        User user =     userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
+
+        return "User account deleted successfully";
     }
 }
