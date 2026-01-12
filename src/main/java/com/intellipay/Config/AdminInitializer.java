@@ -24,7 +24,7 @@ public class AdminInitializer {
 
             String adminEmail = "admin@intellipay.com";
             if (userRepository.existsByEmail(adminEmail)) {
-                return; // ✅ admin already exists
+                return;
             }
 
             User admin = User.builder()
