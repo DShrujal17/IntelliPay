@@ -16,7 +16,7 @@ public class SignupRequestDto {
     @NotBlank(message = "Username is required")
     private String username;
 
-    @Email
+    @Email(message = "Email is not in proper formate")
     @NotBlank(message = "Email is required")
     private String email;
 
