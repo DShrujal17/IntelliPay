@@ -3,9 +3,9 @@ package com.intellipay.exception;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,5 +53,15 @@ public class GlobalExceptionHandler {
                         "message", "Invalid Email Or Password"
                 )
         );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity
+                .status(403)
+                .body(Map.of(
+                        "status", 403,
+                        "message", "You do not have permission to access this resource"
+                ));
     }
 }
