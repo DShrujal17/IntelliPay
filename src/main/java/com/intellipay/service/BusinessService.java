@@ -17,6 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
@@ -52,6 +56,49 @@ public class BusinessService {
         return ApiResponse.<BusinessDto>builder()
                 .message("Business created successfully and pending approval")
                 .data(toDto(savedBusiness))
+                .build();
+    }
+
+    public ApiResponse<List<BusinessDto>> getAllBusinesses() {
+
+        List<BusinessDto> businesses = businessRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        return ApiResponse.<List<BusinessDto>>builder()
+                .message("Businesses fetched successfully")
+                .data(businesses)
+                .build();
+    }
+
+    public ApiResponse<BusinessDto> approveBusiness(UUID businessId) {
+
+        Business business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new RuntimeException("Business not found"));
+
+        business.setStatus(BusinessStatus.APPROVED);
+
+        Business saved = businessRepository.save(business);
+
+        return ApiResponse.<BusinessDto>builder()
+                .message("Business approved successfully")
+                .data(toDto(saved))
+                .build();
+    }
+
+    public ApiResponse<BusinessDto> blockBusiness(UUID businessId) {
+
+        Business business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new RuntimeException("Business not found"));
+
+        business.setStatus(BusinessStatus.BLOCKED);
+
+        Business saved = businessRepository.save(business);
+
+        return ApiResponse.<BusinessDto>builder()
+                .message("Business blocked successfully")
+                .data(toDto(saved))
                 .build();
     }
 
