@@ -108,4 +108,9 @@ public class BusinessService {
         dto.setOwnerEmail(business.getOwner().getEmail());
         return dto;
     }
+
+    public Business getBusinessForUser(User user) {
+        return businessRepository.findByOwner(user)
+                .orElseThrow(() -> new RuntimeException("Business not found"));
+    }
 }

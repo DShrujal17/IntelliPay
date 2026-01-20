@@ -16,7 +16,7 @@ public class CreateBusinessRequestDto {
     @NotBlank(message = "Owner Name is required")
     private String ownerUsername;
 
-    @Email(message = "Email is not in proper formate")
+    @Email(message = "Email is not valid")
     @NotBlank(message = "Email is required")
     private String ownerEmail;
 

@@ -25,4 +25,7 @@ public class SignupRequestDto {
 
     @NotNull(message = "Role is required")
     private String role;
+
+    @NotNull(message = "Business Name is required")
+    private String businessName;
 }

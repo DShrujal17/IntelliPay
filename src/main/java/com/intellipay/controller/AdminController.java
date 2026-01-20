@@ -18,19 +18,18 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final ProfileService profileService;
     private final BusinessService businessService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getAdminProfile()
     {
         return ResponseEntity.ok(profileService.getCurrentUserProfile());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/businesses")
     public ResponseEntity<ApiResponse<BusinessDto>> createBusiness(
             @Valid @RequestBody CreateBusinessRequestDto dto) {
@@ -40,7 +39,6 @@ public class AdminController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/businesses/{id}/approve")
     public ResponseEntity<ApiResponse<BusinessDto>> approveBusiness(
             @PathVariable UUID id) {
@@ -50,7 +48,7 @@ public class AdminController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PutMapping("/businesses/{id}/block")
     public ResponseEntity<ApiResponse<BusinessDto>> blockBusiness(
             @PathVariable UUID id) {
@@ -60,7 +58,6 @@ public class AdminController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/businesses")
     public ResponseEntity<ApiResponse<List<BusinessDto>>> getAllBusinesses() {
 

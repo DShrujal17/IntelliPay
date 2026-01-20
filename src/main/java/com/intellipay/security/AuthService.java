@@ -1,7 +1,10 @@
 package com.intellipay.security;
 
 import com.intellipay.dto.*;
+import com.intellipay.entity.Business;
+import com.intellipay.entity.BusinessStatus;
 import com.intellipay.entity.User;
+import com.intellipay.repository.BusinessRepository;
 import com.intellipay.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,7 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-
+    private final BusinessRepository businessRepository;
 
     public LoginResponseDto login(@Valid LoginRequestDto loginRequestDto) {
 
@@ -55,6 +58,10 @@ public class AuthService {
             throw new RuntimeException("ADMIN role cannot be created via signup");
         }
 
+        if("CUSTOMER".equalsIgnoreCase(signupRequestDto.getRole())) {
+            throw new RuntimeException("Customer is only created by Business role");
+        }
+
         if(userRepository.existsByUsername(signupRequestDto.getUsername())){
             throw new RuntimeException("Username already exists");
         }
@@ -64,10 +71,17 @@ public class AuthService {
         }
 
         User user = modelMapper.map(signupRequestDto , User.class);
-
         user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
 
         User savedUser = userRepository.save(user);
+
+        Business business = Business.builder()
+                .name(signupRequestDto.getBusinessName())
+                .owner(savedUser)
+                .status(BusinessStatus.PENDING)
+                .build();
+
+        businessRepository.save(business);
 
         UserDto userDto = modelMapper.map(savedUser , UserDto.class);
 
