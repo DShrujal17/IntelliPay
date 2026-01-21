@@ -3,10 +3,7 @@ package com.intellipay.controller;
 import com.intellipay.dto.*;
 import com.intellipay.entity.Business;
 import com.intellipay.entity.User;
-import com.intellipay.service.BusinessCustomerService;
-import com.intellipay.service.BusinessService;
-import com.intellipay.service.PlanService;
-import com.intellipay.service.ProfileService;
+import com.intellipay.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/business")
@@ -26,6 +24,7 @@ public class BusinessController {
     private final BusinessService businessService;
     private final BusinessCustomerService businessCustomerService;
     private final PlanService planService;
+    private final SubscriptionService subscriptionService;
 
     @GetMapping("/profile")
     public UserDto getBusinessProfile() {
@@ -64,6 +63,19 @@ public class BusinessController {
 
         return ResponseEntity.ok(
                 planService.createPlan(business, dto)
+        );
+    }
+
+    @PostMapping("/customers/{customerId}/subscribe")
+    public ResponseEntity<ApiResponse<SubscriptionDto>> subscribeCustomer(
+            @AuthenticationPrincipal User businessUser,
+            @PathVariable UUID customerId,
+            @Valid @RequestBody SubscribeCustomerRequestDto dto) {
+
+        Business business = businessService.getBusinessForUser(businessUser);
+
+        return ResponseEntity.ok(
+                subscriptionService.subscribeCustomer(business, customerId, dto)
         );
     }
 }
