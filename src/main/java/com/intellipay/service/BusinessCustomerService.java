@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serial;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +58,23 @@ public class BusinessCustomerService {
         return ApiResponse.<CustomerDto>builder()
                 .message("Customer created successfully")
                 .data(toDto(savedCustomer))
+                .build();
+    }
+
+    public ApiResponse<List<CustomerDto>> getAllCustomers(Business business)
+    {
+        if (business.getStatus() != BusinessStatus.APPROVED) {
+            throw new AccessDeniedException("Business is not approved");
+        }
+
+        List<CustomerDto> customers = customerRepository.findByBusiness(business)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+
+        return ApiResponse.<List<CustomerDto>>builder()
+                .message("Customers fetched successfully")
+                .data(customers)
                 .build();
     }
 
