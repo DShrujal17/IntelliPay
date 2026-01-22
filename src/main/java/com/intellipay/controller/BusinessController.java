@@ -25,6 +25,7 @@ public class BusinessController {
     private final BusinessCustomerService businessCustomerService;
     private final PlanService planService;
     private final SubscriptionService subscriptionService;
+    private final UsageMetricService usageMetricService;
 
     @GetMapping("/profile")
     public UserDto getBusinessProfile() {
@@ -76,6 +77,18 @@ public class BusinessController {
 
         return ResponseEntity.ok(
                 subscriptionService.subscribeCustomer(business, customerId, dto)
+        );
+    }
+
+    @PostMapping("/usage-metrics")
+    public ResponseEntity<ApiResponse<UsageMetricDto>> createUsageMetric(
+            @AuthenticationPrincipal User businessUser,
+            @Valid @RequestBody CreateUsageMetricRequestDto dto) {
+
+        Business business = businessService.getBusinessForUser(businessUser);
+
+        return ResponseEntity.ok(
+                usageMetricService.createUsageMetric(business, dto)
         );
     }
 }
