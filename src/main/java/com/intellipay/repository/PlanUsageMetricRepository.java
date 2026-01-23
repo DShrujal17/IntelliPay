@@ -5,8 +5,10 @@ import com.intellipay.entity.PlanUsageMetric;
 import com.intellipay.entity.UsageMetric;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface PlanUsageMetricRepository extends JpaRepository<PlanUsageMetric, UUID> {
     boolean existsByPlanAndUsageMetric(Plan plan, UsageMetric usageMetric);
+    List<PlanUsageMetric> findByPlan(Plan plan);
 }

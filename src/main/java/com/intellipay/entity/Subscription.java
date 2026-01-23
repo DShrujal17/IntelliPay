@@ -8,14 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "subscriptions",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"customer_id", "status"}
-                )
-        }
-)
+@Table(name = "subscriptions")
 @Getter
 @Setter
 @Builder
@@ -45,6 +38,5 @@ public class Subscription {
     @PrePersist
     public void onCreate() {
         this.startDate = LocalDateTime.now();
-        this.status = SubscriptionStatus.ACTIVE;
     }
 }
