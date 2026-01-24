@@ -11,5 +11,4 @@ public class IntelliPayApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IntelliPayApplication.class, args);
 	}
-
 }

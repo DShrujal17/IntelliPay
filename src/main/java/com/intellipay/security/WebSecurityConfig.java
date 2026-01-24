@@ -1,5 +1,6 @@
 package com.intellipay.security;
 
+import com.intellipay.Config.CorsConfig;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
+    private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
 
         http
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
